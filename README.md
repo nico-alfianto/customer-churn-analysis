@@ -36,4 +36,17 @@ This project follows the CRISP-DM framework:
 * Encourage customers to switch to longer-term contracts.
 * Improve onboarding programs for new customers.
 * Review pricing strategies for premium services.
-* 
+*
+
+## Results
+
+The analysis found that:
+
+- Month-to-Month customers have the highest churn rate.
+- Customers with shorter tenure are more likely to leave.
+- Higher monthly charges are associated with increased churn risk.
+
+## Notebook
+
+Google Colab Notebook:
+[Open Notebook](https://colab.research.google.com/drive/11i-_gJWvSGnqqGsAzDdNsH9OomWPYVve)
