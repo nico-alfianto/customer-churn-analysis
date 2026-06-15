@@ -6,6 +6,15 @@ This project analyzes customer churn behavior using the Telco Customer Churn dat
 
 The objective is to identify factors that contribute to customer churn and provide business recommendations to improve customer retention.
 
+## Dataset
+
+This project uses the Telco Customer Churn dataset, a widely used dataset for customer retention and churn analysis.
+
+Dataset source:
+https://www.kaggle.com/datasets/blastchar/telco-customer-churn
+
+The dataset contains information about customer demographics, subscribed services, account details, and churn status. It includes 7,043 customer records and 21 features such as tenure, contract type, monthly charges, payment method, and churn. The dataset is commonly used for exploratory data analysis and customer retention studies.
+
 ## Tools Used
 
 * Python
@@ -36,7 +45,6 @@ This project follows the CRISP-DM framework:
 * Encourage customers to switch to longer-term contracts.
 * Improve onboarding programs for new customers.
 * Review pricing strategies for premium services.
-*
 
 ## Results
 
