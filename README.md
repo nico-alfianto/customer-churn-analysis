@@ -20,7 +20,7 @@ This analysis uses the popular **Telco Customer Churn** dataset from Kaggle, wid
 **Source**: [Kaggle – Telco Customer Churn](https://www.kaggle.com/datasets/blastchar/telco-customer-churn)
 
 **Quick Stats:**
-- **7,043** customer records
+- **7,032** customer records
 - **21 features** including demographics, services, account info, and churn status
 - **Key variables**: `tenure`, `Contract`, `MonthlyCharges`, `PaymentMethod`, `Churn`
 
