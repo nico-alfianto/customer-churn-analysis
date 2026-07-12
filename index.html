@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Customer Churn Analysis Dashboard | Nico Alfianto</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -20,9 +21,10 @@ body { background: var(--bg); color: var(--text); }
   background: linear-gradient(135deg, #1e3a8a 0%, #0ea5e9 100%);
   padding: 30px; border-radius: 20px; margin-bottom: 25px;
   box-shadow: 0 10px 40px rgba(59,130,246,0.3);
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
 }
 .header h1 { font-size: 32px; font-weight: 800; }
-.header p { color: #e0e7ff; margin-top: 8px; }
+.header p { color: #e0e7ff; margin-top: 8px; width: 100%; }
 
 /* KPI CARDS */
 .kpi-grid {
@@ -30,10 +32,10 @@ body { background: var(--bg); color: var(--text); }
 }
 .kpi-card {
   background: var(--card); padding: 25px; border-radius: 16px; border-left: 5px solid var(--accent);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3); transition: transform 0.2s;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3); transition: transform 0.3s;
 }
 .kpi-card:hover { transform: translateY(-5px); }
-.kpi-card h3 { font-size: 14px; color: var(--muted); font-weight: 600; text-transform: uppercase; }
+.kpi-card h3 { font-size: 14px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
 .kpi-card .value { font-size: 36px; font-weight: 800; margin: 10px 0; }
 
 /* DASHBOARD GRID */
@@ -42,13 +44,29 @@ body { background: var(--bg); color: var(--text); }
 }
 .chart-card {
   background: var(--card); padding: 25px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  page-break-inside: avoid;
 }
-.chart-card h3 { font-size: 18px; margin-bottom: 15px; color: var(--accent2); }
+.chart-card h3 { font-size: 18px; margin-bottom: 15px; color: var(--accent2); font-weight: 700; }
 
-/* IMAGE FROM FOLDER */
-.chart-image {
-  width: 100%; border-radius: 12px; background: #0f172a; padding: 10px;
-  border: 1px solid #374151; margin-bottom: 15px;
+/* IMAGE CONTAINER */
+.image-wrapper {
+  width: 100%; height: 350px; background: #0f172a; border-radius: 12px;
+  border: 1px solid #374151; overflow: hidden; margin-bottom: 15px; position: relative;
+}
+.image-wrapper img {
+  width: 100%; height: 100%; object-fit: contain; transition: transform 0.4s ease; cursor: zoom-in;
+}
+.image-wrapper:hover img { transform: scale(1.08); }
+
+/* MODAL */
+.modal {
+  display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.9); justify-content: center; align-items: center; z-index: 9999;
+}
+.modal.active { display: flex; }
+.modal img { max-width: 90%; max-height: 90%; border-radius: 12px; }
+.modal-close {
+  position: absolute; top: 30px; right: 40px; font-size: 40px; color: white; cursor: pointer; font-weight: 800;
 }
 
 /* INSIGHTS */
@@ -56,152 +74,152 @@ body { background: var(--bg); color: var(--text); }
   background: linear-gradient(135deg, #1e3a8a, #1f2937); padding: 20px; border-radius: 12px;
   border-left: 4px solid var(--accent2); margin-top: 15px;
 }
-.insight-box h4 { color: var(--accent2); margin-bottom: 8px; }
+.insight-box h4 { color: var(--accent2); margin-bottom: 8px; font-weight: 600; }
+
+/* METHODOLOGY LIST */
+.method-list p {
+  margin-bottom: 12px;
+  line-height: 1.8;
+}
+.method-list b { color: var(--accent2); }
 
 .table { width:100%; border-collapse: collapse; margin-top:15px; font-size:13px; }
-.table th { background: var(--card2); padding:12px; text-align:left; color: var(--accent2); }
+.table th { background: var(--card2); padding:12px; text-align:left; color: var(--accent2); font-weight: 600; }
 .table td { padding:12px; border-bottom: 1px solid #374151; }
 
 .btn {
   background: linear-gradient(90deg, var(--accent), var(--accent2)); color:white; padding:12px 24px;
-  border-radius:10px; text-decoration:none; font-weight:700; display:inline-block; margin-top:15px;
+  border-radius:10px; text-decoration:none; font-weight:700; display:inline-block; border: none; cursor: pointer;
 }
+.btn-group { display: flex; gap: 10px; margin-top: 15px; }
 </style>
 </head>
 <body>
 
+<div id="dashboard-to-pdf">
 <div class="container">
-  <!-- HEADER -->
   <div class="header">
-    <h1>📊 Customer Churn Analysis Dashboard</h1>
-    <p>Telco Dataset | 7,032 Customers | Interactive Dashboard with EDA Visualizations</p>
-    <a href="https://colab.research.google.com/github/nico-alfianto/customer-churn-analysis/blob/main/Customer_Churn_Analysis.ipynb" class="btn" target="_blank">View Full Notebook</a>
+    <div>
+      <h1>Customer Churn Analysis Dashboard</h1>
+      <p>Telco Dataset | 7,032 Customers | Generated: October 2026</p>
+    </div>
+    <div class="btn-group">
+      <button class="btn" onclick="downloadPDF()">Download PDF</button>
+      <a href="https://colab.research.google.com/github/nico-alfianto/customer-churn-analysis/blob/main/Customer_Churn_Analysis.ipynb" class="btn" target="_blank">View Notebook</a>
+    </div>
   </div>
 
-  <!-- KPI SECTION -->
   <div class="kpi-grid">
-    <div class="kpi-card">
-      <h3>Total Customers</h3>
-      <div class="value">7,032</div>
-    </div>
-    <div class="kpi-card" style="border-left-color: var(--danger);">
-      <h3>Churn Rate</h3>
-      <div class="value" style="color: var(--danger);">26.58%</div>
-    </div>
-    <div class="kpi-card">
-      <h3>Average Tenure</h3>
-      <div class="value">32.4 Months</div>
-    </div>
-    <div class="kpi-card">
-      <h3>Avg Monthly Charges</h3>
-      <div class="value">$64.80</div>
-    </div>
+    <div class="kpi-card"><h3>Total Customers</h3><div class="value">7,032</div></div>
+    <div class="kpi-card" style="border-left-color: var(--danger);"><h3>Churn Rate</h3><div class="value" style="color: var(--danger);">26.58%</div></div>
+    <div class="kpi-card"><h3>Average Tenure</h3><div class="value">32.4 Months</div></div>
+    <div class="kpi-card"><h3>Average Monthly Charges</h3><div class="value">$64.80</div></div>
   </div>
 
-  <!-- EXECUTIVE DASHBOARD IMAGE -->
   <div class="chart-card" style="margin-bottom: 20px;">
-    <h3>📈 Executive Summary Dashboard</h3>
-    <img src="images/executive_dashboard.png" alt="Executive Dashboard" class="chart-image">
-    <p style="color: var(--muted);">Overview of key metrics from the Telco Customer Churn analysis</p>
+    <h3>Executive Summary Dashboard</h3>
+    <div class="image-wrapper" onclick="openModal('images/executive_dashboard.png')">
+      <img src="images/executive_dashboard.png" alt="Executive Dashboard">
+    </div>
   </div>
 
-  <!-- CHARTS GRID WITH YOUR IMAGES -->
   <div class="dashboard-grid">
-    
-    <!-- CHART 1 -->
     <div class="chart-card">
       <h3>Churn Distribution</h3>
-      <img src="images/churn_distribution.png" alt="Churn Distribution" class="chart-image">
+      <div class="image-wrapper" onclick="openModal('images/churn_distribution.png')">
+        <img src="images/churn_distribution.png" alt="Churn Distribution">
+      </div>
       <div class="insight-box">
-        <h4>💡 Key Insight</h4>
+        <h4>Key Insight</h4>
         <p>73.42% of customers are retained, while 26.58% have churned. This represents 1,869 lost customers.</p>
       </div>
     </div>
 
-    <!-- CHART 2 -->
     <div class="chart-card">
       <h3>Churn Rate by Contract Type</h3>
-      <img src="images/contract_vs_churn.png" alt="Contract vs Churn" class="chart-image">
+      <div class="image-wrapper" onclick="openModal('images/contact_vs_churn.png')">
+        <img src="images/contact_vs_churn.png" alt="Contract vs Churn">
+      </div>
       <div class="insight-box">
-        <h4>💡 Key Insight</h4>
+        <h4>Key Insight</h4>
         <p>Month-to-Month customers have 42.7% churn rate. This is 15x higher than Two-Year contracts at 2.85%.</p>
       </div>
     </div>
 
-    <!-- CHART 3 -->
     <div class="chart-card">
       <h3>Churn by Tenure Group</h3>
-      <img src="images/tenure_vs_churn.png" alt="Tenure vs Churn" class="chart-image">
+      <div class="image-wrapper" onclick="openModal('images/tenure_vs_churn.png')">
+        <img src="images/tenure_vs_churn.png" alt="Tenure vs Churn">
+      </div>
       <div class="insight-box">
-        <h4>💡 Key Insight</h4>
-        <p>New customers in 0-12 months tenure group are most vulnerable to churn. Early engagement programs needed.</p>
+        <h4>Key Insight</h4>
+        <p>New customers in 0-12 months tenure group are most vulnerable to churn.</p>
       </div>
     </div>
 
-    <!-- CHART 4 -->
     <div class="chart-card">
       <h3>Churn by Internet Service</h3>
-      <img src="images/internet_service_churn.png" alt="Internet Service Churn" class="chart-image">
+      <div class="image-wrapper" onclick="openModal('images/internet_service_churn.png')">
+        <img src="images/internet_service_churn.png" alt="Internet Service Churn">
+      </div>
       <div class="insight-box">
-        <h4>💡 Key Insight</h4>
+        <h4>Key Insight</h4>
         <p>Fiber Optic users show significantly higher churn rates. Service quality and pricing should be reviewed.</p>
       </div>
     </div>
-
   </div>
 
-  <!-- INTERACTIVE CHART -->
   <div class="chart-card" style="margin-top: 20px;">
-    <h3>📊 Interactive: Churn Rate Comparison</h3>
+    <h3>Interactive: Churn Rate Comparison</h3>
     <canvas id="interactiveChart"></canvas>
   </div>
 
-  <!-- BUSINESS RECOMMENDATIONS -->
   <div class="chart-card" style="margin-top: 20px;">
-    <h3>🎯 Business Recommendations</h3>
+    <h3>Business Recommendations</h3>
     <table class="table">
       <tr><th>Priority</th><th>Action</th><th>Expected Impact</th></tr>
-      <tr>
-        <td>High</td>
-        <td>Incentivize Long-Term Contracts</td>
-        <td>Reduce Month-to-Month churn from 42.7%</td>
-      </tr>
-      <tr>
-        <td>High</td>
-        <td>Onboarding Program for 0-12 Month Customers</td>
-        <td>Improve retention in vulnerable segment</td>
-      </tr>
-      <tr>
-        <td>Medium</td>
-        <td>Review Fiber Optic Pricing Strategy</td>
-        <td>Address service-specific churn</td>
-      </tr>
-      <tr>
-        <td>Medium</td>
-        <td>Retention Campaigns Before Month 6</td>
-        <td>Proactive churn prevention</td>
-      </tr>
+      <tr><td>High</td><td>Incentivize Long-Term Contracts</td><td>Reduce Month-to-Month churn from 42.7%</td></tr>
+      <tr><td>High</td><td>Onboarding Program for 0-12 Month Customers</td><td>Improve retention in vulnerable segment</td></tr>
+      <tr><td>Medium</td><td>Review Fiber Optic Pricing Strategy</td><td>Address service-specific churn</td></tr>
+      <tr><td>Medium</td><td>Retention Campaigns Before Month 6</td><td>Proactive churn prevention</td></tr>
     </table>
   </div>
 
-  <!-- METHODOLOGY -->
   <div class="chart-card" style="margin-top: 20px;">
-    <h3>🔬 Methodology: CRISP-DM Framework</h3>
-    <p><b>1. Business Understanding:</b> Identify churn factors and retention strategies</p>
-    <p><b>2. Data Understanding:</b> 7,043 records, 21 features. Source: Kaggle Telco Dataset</p>
-    <p><b>3. Data Preparation:</b> Cleaned TotalCharges, handled missing values</p>
-    <p><b>4. EDA:</b> Visualized Contract, Tenure, Charges, and Service impact</p>
-    <p><b>5. Insights & Recommendations:</b> Data-driven business actions</p>
+    <h3>Methodology: CRISP-DM Framework</h3>
+    <div class="method-list">
+      <p><b>1. Business Understanding:</b> Identify churn factors and retention strategies</p>
+      <p><b>2. Data Understanding:</b> 7,043 records, 21 features. Source: Kaggle Telco Dataset</p>
+      <p><b>3. Data Preparation:</b> Cleaned TotalCharges, handled missing values</p>
+      <p><b>4. Exploratory Data Analysis:</b> Visualized Contract, Tenure, Charges, and Service impact</p>
+      <p><b>5. Insights and Recommendations:</b> Data-driven business actions</p>
+    </div>
   </div>
 
   <div style="text-align:center; color:var(--muted); margin:40px 0;">
-    <p>Dashboard by <b>Nico Alfianto</b> | <a href="https://github.com/nico-alfianto/customer-churn-analysis" style="color:var(--accent2);">View Source Code</a></p>
+    <p>Dashboard by Nico Alfianto | Data Source: Kaggle Telco Customer Churn</p>
   </div>
+</div>
+</div>
 
+<div class="modal" id="imageModal" onclick="closeModal()">
+  <span class="modal-close">&times;</span>
+  <img id="modalImg" src="" alt="Full View">
 </div>
 
 <script>
-// INTERACTIVE CHART
+function downloadPDF() {
+  const element = document.getElementById('dashboard-to-pdf');
+  const opt = {
+    margin: 10,
+    filename: 'Customer_Churn_Dashboard_NicoAlfianto.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+  html2pdf().set(opt).from(element).save();
+}
+
 const ctx = document.getElementById('interactiveChart');
 new Chart(ctx, {
   type: 'bar',
@@ -214,13 +232,21 @@ new Chart(ctx, {
   },
   options: {
     responsive: true,
-    plugins: { legend: { labels: { color: '#f9fafb' } },
+    plugins: { legend: { labels: { color: '#f9fafb' } } },
     scales: { 
       x: { ticks: { color: '#9ca3af' } },
       y: { ticks: { color: '#9ca3af' }, title: { display: true, text: 'Percentage %', color: '#9ca3af' } }
     }
   }
 });
+
+function openModal(src){
+  document.getElementById('modalImg').src = src;
+  document.getElementById('imageModal').classList.add('active');
+}
+function closeModal(){
+  document.getElementById('imageModal').classList.remove('active');
+}
 </script>
 </body>
 </html>
