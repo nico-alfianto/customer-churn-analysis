@@ -35,16 +35,21 @@ body { background: var(--bg); color: var(--text); }
 .kpi-card:hover { transform: translateY(-5px); }
 .kpi-card h3 { font-size: 14px; color: var(--muted); font-weight: 600; text-transform: uppercase; }
 .kpi-card .value { font-size: 36px; font-weight: 800; margin: 10px 0; }
-.kpi-card .change { font-size: 12px; color: var(--success); }
 
 /* DASHBOARD GRID */
 .dashboard-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 20px;
 }
 .chart-card {
   background: var(--card); padding: 25px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);
 }
 .chart-card h3 { font-size: 18px; margin-bottom: 15px; color: var(--accent2); }
+
+/* IMAGE FROM FOLDER */
+.chart-image {
+  width: 100%; border-radius: 12px; background: #0f172a; padding: 10px;
+  border: 1px solid #374151; margin-bottom: 15px;
+}
 
 /* INSIGHTS */
 .insight-box {
@@ -53,7 +58,6 @@ body { background: var(--bg); color: var(--text); }
 }
 .insight-box h4 { color: var(--accent2); margin-bottom: 8px; }
 
-/* TABLE */
 .table { width:100%; border-collapse: collapse; margin-top:15px; font-size:13px; }
 .table th { background: var(--card2); padding:12px; text-align:left; color: var(--accent2); }
 .table td { padding:12px; border-bottom: 1px solid #374151; }
@@ -70,8 +74,8 @@ body { background: var(--bg); color: var(--text); }
   <!-- HEADER -->
   <div class="header">
     <h1>📊 Customer Churn Analysis Dashboard</h1>
-    <p>Telco Dataset | 7,032 Customers | Data-Driven Insights to Reduce Churn</p>
-    <a href="https://colab.research.google.com/github/nico-alfianto/customer-churn-analysis/blob/main/Customer_Churn_Analysis.ipynb" class="btn" target="_blank">Open in Google Colab</a>
+    <p>Telco Dataset | 7,032 Customers | Interactive Dashboard with EDA Visualizations</p>
+    <a href="https://colab.research.google.com/github/nico-alfianto/customer-churn-analysis/blob/main/Customer_Churn_Analysis.ipynb" class="btn" target="_blank">View Full Notebook</a>
   </div>
 
   <!-- KPI SECTION -->
@@ -79,68 +83,77 @@ body { background: var(--bg); color: var(--text); }
     <div class="kpi-card">
       <h3>Total Customers</h3>
       <div class="value">7,032</div>
-      <div class="change">Active Dataset</div>
     </div>
     <div class="kpi-card" style="border-left-color: var(--danger);">
       <h3>Churn Rate</h3>
       <div class="value" style="color: var(--danger);">26.58%</div>
-      <div class="change">1,869 Customers Churned</div>
     </div>
     <div class="kpi-card">
       <h3>Average Tenure</h3>
       <div class="value">32.4 Months</div>
-      <div class="change">~2.7 Years</div>
     </div>
     <div class="kpi-card">
-      <h3>Avg Monthly Revenue</h3>
+      <h3>Avg Monthly Charges</h3>
       <div class="value">$64.80</div>
-      <div class="change">Per Customer</div>
     </div>
   </div>
 
-  <!-- CHARTS GRID -->
+  <!-- EXECUTIVE DASHBOARD IMAGE -->
+  <div class="chart-card" style="margin-bottom: 20px;">
+    <h3>📈 Executive Summary Dashboard</h3>
+    <img src="images/executive_dashboard.png" alt="Executive Dashboard" class="chart-image">
+    <p style="color: var(--muted);">Overview of key metrics from the Telco Customer Churn analysis</p>
+  </div>
+
+  <!-- CHARTS GRID WITH YOUR IMAGES -->
   <div class="dashboard-grid">
     
     <!-- CHART 1 -->
     <div class="chart-card">
-      <h3>Churn Rate by Contract Type</h3>
-      <canvas id="contractChart"></canvas>
+      <h3>Churn Distribution</h3>
+      <img src="images/churn_distribution.png" alt="Churn Distribution" class="chart-image">
       <div class="insight-box">
         <h4>💡 Key Insight</h4>
-        <p>Month-to-Month customers have the highest churn rate at 42.7%. Long-term contracts significantly reduce churn.</p>
+        <p>73.42% of customers are retained, while 26.58% have churned. This represents 1,869 lost customers.</p>
       </div>
     </div>
 
     <!-- CHART 2 -->
     <div class="chart-card">
-      <h3>Churn Distribution by Tenure</h3>
-      <canvas id="tenureChart"></canvas>
+      <h3>Churn Rate by Contract Type</h3>
+      <img src="images/contract_vs_churn.png" alt="Contract vs Churn" class="chart-image">
       <div class="insight-box">
         <h4>💡 Key Insight</h4>
-        <p>Customers with tenure less than 12 months are the most vulnerable segment. Early engagement is critical.</p>
+        <p>Month-to-Month customers have 42.7% churn rate. This is 15x higher than Two-Year contracts at 2.85%.</p>
       </div>
     </div>
 
     <!-- CHART 3 -->
     <div class="chart-card">
-      <h3>Monthly Charges vs Churn</h3>
-      <canvas id="chargeChart"></canvas>
+      <h3>Churn by Tenure Group</h3>
+      <img src="images/tenure_vs_churn.png" alt="Tenure vs Churn" class="chart-image">
       <div class="insight-box">
         <h4>💡 Key Insight</h4>
-        <p>Customers who churned pay $16 more on average. Price sensitivity is a major churn driver.</p>
+        <p>New customers in 0-12 months tenure group are most vulnerable to churn. Early engagement programs needed.</p>
       </div>
     </div>
 
     <!-- CHART 4 -->
     <div class="chart-card">
-      <h3>Churn by Internet Service Type</h3>
-      <canvas id="internetChart"></canvas>
+      <h3>Churn by Internet Service</h3>
+      <img src="images/internet_service_churn.png" alt="Internet Service Churn" class="chart-image">
       <div class="insight-box">
         <h4>💡 Key Insight</h4>
-        <p>Fiber Optic users churn 45% of the time. Service quality and pricing need review.</p>
+        <p>Fiber Optic users show significantly higher churn rates. Service quality and pricing should be reviewed.</p>
       </div>
     </div>
 
+  </div>
+
+  <!-- INTERACTIVE CHART -->
+  <div class="chart-card" style="margin-top: 20px;">
+    <h3>📊 Interactive: Churn Rate Comparison</h3>
+    <canvas id="interactiveChart"></canvas>
   </div>
 
   <!-- BUSINESS RECOMMENDATIONS -->
@@ -151,21 +164,21 @@ body { background: var(--bg); color: var(--text); }
       <tr>
         <td>High</td>
         <td>Incentivize Long-Term Contracts</td>
-        <td>Reduce churn from 42.7% to <15%</td>
+        <td>Reduce Month-to-Month churn from 42.7%</td>
       </tr>
       <tr>
         <td>High</td>
-        <td>Strengthen Onboarding for New Customers 0-12 Months</td>
+        <td>Onboarding Program for 0-12 Month Customers</td>
         <td>Improve retention in vulnerable segment</td>
       </tr>
       <tr>
         <td>Medium</td>
-        <td>Review Pricing Strategy for Fiber Optic Services</td>
-        <td>Address price-driven churn</td>
+        <td>Review Fiber Optic Pricing Strategy</td>
+        <td>Address service-specific churn</td>
       </tr>
       <tr>
         <td>Medium</td>
-        <td>Launch Retention Campaigns Before Month 6</td>
+        <td>Retention Campaigns Before Month 6</td>
         <td>Proactive churn prevention</td>
       </tr>
     </table>
@@ -174,92 +187,37 @@ body { background: var(--bg); color: var(--text); }
   <!-- METHODOLOGY -->
   <div class="chart-card" style="margin-top: 20px;">
     <h3>🔬 Methodology: CRISP-DM Framework</h3>
-    <p><b>1. Business Understanding:</b> Identify factors causing customer churn</p>
-    <p><b>2. Data Understanding:</b> 7,043 records, 21 features. Cleaned to 7,032 records</p>
-    <p><b>3. Data Preparation:</b> Converted TotalCharges to numeric, handled 11 missing values</p>
-    <p><b>4. EDA:</b> Analyzed Contract, Tenure, Charges, and Internet Service impact</p>
-    <p><b>5. Insights:</b> 4 major churn drivers identified</p>
-    <p><b>6. Deployment:</b> Interactive dashboard for business stakeholders</p>
+    <p><b>1. Business Understanding:</b> Identify churn factors and retention strategies</p>
+    <p><b>2. Data Understanding:</b> 7,043 records, 21 features. Source: Kaggle Telco Dataset</p>
+    <p><b>3. Data Preparation:</b> Cleaned TotalCharges, handled missing values</p>
+    <p><b>4. EDA:</b> Visualized Contract, Tenure, Charges, and Service impact</p>
+    <p><b>5. Insights & Recommendations:</b> Data-driven business actions</p>
   </div>
 
   <div style="text-align:center; color:var(--muted); margin:40px 0;">
-    <p>Dashboard by <b>Nico Alfianto</b> | Data Source: Kaggle Telco Customer Churn</p>
+    <p>Dashboard by <b>Nico Alfianto</b> | <a href="https://github.com/nico-alfianto/customer-churn-analysis" style="color:var(--accent2);">View Source Code</a></p>
   </div>
 
 </div>
 
 <script>
-// DATA FROM YOUR COLAB ANALYSIS
-const ctx1 = document.getElementById('contractChart');
-new Chart(ctx1, {
+// INTERACTIVE CHART
+const ctx = document.getElementById('interactiveChart');
+new Chart(ctx, {
   type: 'bar',
   data: {
     labels: ['Month-to-Month', 'One Year', 'Two Year'],
     datasets: [
-      { label: 'Retained', data: [57.29, 88.72, 97.15], backgroundColor: '#06b6d4' },
-      { label: 'Churned', data: [42.71, 11.28, 2.85], backgroundColor: '#ef4444' }
+      { label: 'Retained %', data: [57.29, 88.72, 97.15], backgroundColor: '#06b6d4' },
+      { label: 'Churned %', data: [42.71, 11.28, 2.85], backgroundColor: '#ef4444' }
     ]
   },
   options: {
     responsive: true,
-    plugins: { legend: { labels: { color: '#f9fafb' } } },
+    plugins: { legend: { labels: { color: '#f9fafb' } },
     scales: { 
       x: { ticks: { color: '#9ca3af' } },
       y: { ticks: { color: '#9ca3af' }, title: { display: true, text: 'Percentage %', color: '#9ca3af' } }
-    }
-  }
-});
-
-const ctx2 = document.getElementById('tenureChart');
-new Chart(ctx2, {
-  type: 'doughnut',
-  data: {
-    labels: ['0-12 Months', '13-24 Months', '25-48 Months', '49-72 Months'],
-    datasets: [{
-      data: [45, 25, 20, 10],
-      backgroundColor: ['#ef4444','#f59e0b','#3b82f6','#22c55e']
-    }]
-  },
-  options: {
-    plugins: { legend: { labels: { color: '#f9fafb' } }
-  }
-});
-
-const ctx3 = document.getElementById('chargeChart');
-new Chart(ctx3, {
-  type: 'bar',
-  data: {
-    labels: ['Retained Customers', 'Churned Customers'],
-    datasets: [{
-      label: 'Avg Monthly Charges ($)',
-      data: [58.2, 74.4],
-      backgroundColor: ['#06b6d4','#ef4444']
-    }]
-  },
-  options: {
-    plugins: { legend: { labels: { color: '#f9fafb' } },
-    scales: { 
-      x: { ticks: { color: '#9ca3af' } },
-      y: { ticks: { color: '#9ca3af' } }
-    }
-  }
-});
-
-const ctx4 = document.getElementById('internetChart');
-new Chart(ctx4, {
-  type: 'bar',
-  data: {
-    labels: ['DSL', 'Fiber Optic', 'No Internet'],
-    datasets: [
-      { label: 'Retained', data: [75, 55, 90], backgroundColor: '#06b6d4' },
-      { label: 'Churned', data: [25, 45, 10], backgroundColor: '#ef4444' }
-    ]
-  },
-  options: {
-    plugins: { legend: { labels: { color: '#f9fafb' } },
-    scales: { 
-      x: { ticks: { color: '#9ca3af' } },
-      y: { ticks: { color: '#9ca3af' } }
     }
   }
 });
